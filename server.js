@@ -2,6 +2,7 @@ const Joi = require("joi");
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const Survey = require("./models/survey.models");
 
 const app = express();
 //this return a piece of middleware
@@ -9,8 +10,10 @@ app.use(express.json());
 
 const db = require("./models");
 
+// mongodb+srv://Seun:zeus12345@survey.cbgdgar.mongodb.net/?retryWrites=true&w=majority
+
 db.mongoose
-  .connect(db.url, {
+  .connect("mongodb://localhost:27017/lyrics-rating", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -36,11 +39,15 @@ app.get("/", (req, res) => {
   res.json({ message: "App running" });
 });
 
-app.get("/api/survey/:id", (req, res) => {
-  res.send([]);
+app.get("/api/displaySurvey/:name", (req, res) => {
+  const listSurvey=surveyRate.find(c=> c.name===(req.params.name));
+  if(!listSurvey) res.status(404).send('This the own list of survey')
+  res.send(listSurvey);
 });
-app.post("/api/createSurvey/", (req, res) => {
-  const schema = Joi.object({
+app.post("/api/createSurvey/", async (req, res) => {
+
+
+   const schema = Joi.object({
     name: Joi.string()
       .min(3)
       .required(),
@@ -50,244 +57,592 @@ app.post("/api/createSurvey/", (req, res) => {
     email: Joi.string()
       .min(3)
       .required(),
-    rock1: {
-      r1_1: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
 
-      r1_2: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
+      
+    ratings: [
+      // rock 1 start
+      {
+        genre:Joi.string()
+        .min(3)
+        .required(),
+        comment: Joi.string()
+        .min(3)
+        .required(),
+        ratings:[
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string()
+            .min(1)
+            .max(5)
 
-      r1_3: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
+          },
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string() 
+            .min(1)
+            .max(5)
+          },
+          {
+          genre:Joi.string()
+          .min(3)
+          .required(),
+          track_Id:Joi.string()
+          .min(3)
+          .required(),
+          rating:Joi.string()
+          .min(1)
+          .max(5)
+          },
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string() 
+            .min(1)
+            .max(5)
+          }
+        ]
+      },
+      // end of rock 1
+      
+        {
+          //rock 2 start
+          genre:Joi.string()
+          .min(3)
+          .required(),
+          comment: Joi.string()
+          .min(3)
+          .required(),
+          ratings:[
+            {
+              genre:Joi.string()
+              .min(3)
+              .required(),
+              track_Id:Joi.string()
+              .min(3)
+              .required(),
+              rating:Joi.string()
+              .min(1)
+              .max(5)
+  
+            },
+            {
+              genre:Joi.string()
+              .min(3)
+              .required(),
+              track_Id:Joi.string()
+              .min(3)
+              .required(),
+              rating:Joi.string() 
+              .min(1)
+              .max(5)
+            },
+            {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string()
+            .min(1)
+            .max(5)
+            .required(),
+            },
+            {
+              genre:Joi.string()
+              .min(3)
+              .required(),
+              track_Id:Joi.string()
+              .min(3)
+              .required(),
+              rating:Joi.string() 
+              .min(1)
+              .max(5)
+              .required(),
+            }
+          ] 
+      },
+      // rock 2 ending
+      {
+        //rock 3 start
+        genre:Joi.string()
+        .min(3)
+        .required(),
+        comment: Joi.string()
+        .min(3)
+        .required(),
+        ratings:[
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string()
+            .min(1)
+            .max(5)
+            .required(),
+          },
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string()
+            .min(1)
+            .max(5)
+            .required(), 
+          },
+          {
+          genre:Joi.string()
+          .min(3)
+          .required(),
+          track_Id:Joi.string()
+          .min(3)
+          .required(),
+          rating:Joi.string()
+          .min(1)
+          .max(5)
+          .required(),
+          },
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string() 
+            .min(1)
+            .max(5)
+            .required(),
+          }
+        ]
 
-      r1_4: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-      comment: Joi.string()
-        // .min(3)
-        .max(500),
-    },
-    rock2: {
-      r2_1: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
+      },
+      //end of rock 3
+      {
+        //pop 1 start
+        genre:Joi.string()
+        .min(3)
+        .required(),
+        comment: Joi.string()
+        .min(3)
+        .required(),
+        ratings:[
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string()
+            .min(1)
+            .max(5)
+            .required(),
+          },
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string() 
+            .min(1)
+            .max(5)
+            .required(),
+          },
+          {
+          genre:Joi.string()
+          .min(3)
+          .required(),
+          track_Id:Joi.string()
+          .min(3)
+          .required(),
+          rating:Joi.string()
+          .min(1)
+          .max(5)
+          .required(),
+          },
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string() 
+            .min(1)
+            .max(5)
+            .required(),
+          }
+        ]
 
-      r2_2: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
+      },
+      // ending of pop1
+      {
+       // pop 2 start 
+        genre:Joi.string()
+        .min(3)
+        .required(),
+        comment: Joi.string()
+        .min(3)
+        .required(),
+        ratings:[
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string()
+            .min(1)
+            .max(5)
+            .required(),
 
-      r2_3: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
+          },
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string() 
+            .min(1)
+            .max(5)
+            .required(),
+          },
+          {
+          genre:Joi.string()
+          .min(3)
+          .required(),
+          track_Id:Joi.string()
+          .min(3)
+          .required(),
+          rating:Joi.string()
+          .min(1)
+          .max(5)
+          .required(),
+          },
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string() 
+            .min(1)
+            .max(5)
+            .required(),
+          }
+        ]
 
-      r2_4: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-      comment: Joi.string()
-        // .min(3)
-        .max(500),
-    },
-    rock3: {
-      r3_1: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
+      },
+      //end of pop2
+      {
+        // pop 3 start
+        genre:Joi.string()
+        .min(3)
+        .required(),
+        comment: Joi.string()
+        .min(3)
+        .required(),
+        ratings:[
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string()
+            .min(1)
+            .max(5)
+            .required(),
+          },
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string()
+            .min(1)
+            .max(5)
+            .required(), 
+          },
+          {
+          genre:Joi.string()
+          .min(3)
+          .required(),
+          track_Id:Joi.string()
+          .min(3)
+          .required(),
+          rating:Joi.string()
+          .min(1)
+          .max(5)
+          .required(),
+          },
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string()
+            .min(1)
+            .max(5)
+            .required(), 
+          }
+        ]
 
-      r3_2: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
+      },
+      //end of pop3
+      
+        {
+          // jazz 1 start
+          genre:Joi.string()
+          .min(3)
+          .required(),
+          comment: Joi.string()
+          .min(3)
+          .required(),
+          ratings:[
+            {
+              genre:Joi.string()
+              .min(3)
+              .required(),
+              track_Id:Joi.string()
+              .min(3)
+              .required(),
+              rating:Joi.string()
+              .min(1)
+              .max(5)
+              .required(),
+            },
+            {
+              genre:Joi.string()
+              .min(3)
+              .required(),
+              track_Id:Joi.string()
+              .min(3)
+              .required(),
+              rating:Joi.string() 
+              .min(1)
+              .max(5)
+              .required(),
+            },
+            {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string()
+            .min(1)
+            .max(5)
+            .required(),
+            },
+            {
+              genre:Joi.string()
+              .min(3)
+              .required(),
+              track_Id:Joi.string()
+              .min(3)
+              .required(),
+              rating:Joi.string()
+              .min(1)
+              .max(5)
+              .required(), 
+            }
+          ]
+      },
+      //end of jazz 1
+      {
+        // jazz 2 start
+        genre:Joi.string()
+        .min(3)
+        .required(),
+        comment: Joi.string()
+        .min(3)
+        .required(),
+        ratings:[
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string()
+            .min(1)
+            .max(5)
+            .required(),
+          },
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string() 
+            .min(1)
+            .max(5)
+            .required(),
+          },
+          {
+          genre:Joi.string()
+          .min(3)
+          .required(),
+          track_Id:Joi.string()
+          .min(3)
+          .required(),
+          rating:Joi.string()
+          .min(1)
+          .max(5)
+          .required(),
+          },
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string()
+            .min(1)
+            .max(5)
+            .required(), 
+          }
+        ]
 
-      r3_3: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
+      },
+      //end of jazz2
+      {
+        // jazz 3 start
+        genre:Joi.string()
+        .min(3)
+        .required(),
+        comment: Joi.string()
+        .min(3)
+        .required(),
+        ratings:[
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string()
+            .min(1)
+            .max(5)
+            .required(),
 
-      r3_4: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-      comment: Joi.string()
-        // .min(3)
-        .max(500),
-    },
-    pop1: {
-      p1_1: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
+          },
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string() 
+            .min(1)
+            .max(5)
+            .required(),
+          },
+          {
+          genre:Joi.string()
+          .min(3)
+          .required(),
+          track_Id:Joi.string()
+          .min(3)
+          .required(),
+          rating:Joi.string()
+          .min(1)
+          .max(5)
+          .required(),
+          },
+          {
+            genre:Joi.string()
+            .min(3)
+            .required(),
+            track_Id:Joi.string()
+            .min(3)
+            .required(),
+            rating:Joi.string()
+            .min(1)
+            .max(5)
+            .required(), 
+          }
+        ]
 
-      p1_2: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
 
-      p1_3: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
+      },
+      // end 0f jazz 3
+      
+      
+      
+     
 
-      p1_4: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-      comment: Joi.string()
-        // .min(3)
-        .max(500),
-    },
-    pop2: {
-      p2_1: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
+      
 
-      p2_2: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-
-      p2_3: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-
-      p2_4: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-      comment: Joi.string()
-        // .min(3)
-        .max(500),
-    },
-    pop3: {
-      p3_1: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-
-      p3_2: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-
-      p3_3: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-
-      p3_4: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-      comment: Joi.string()
-        // .min(3)
-        .max(500),
-    },
-    jazz1: {
-      j1_1: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-
-      j1_2: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-
-      j1_3: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-
-      j1_4: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-      comment: Joi.string()
-        // .min(3)
-        .max(500),
-    },
-    jazz2: {
-      j2_1: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-
-      j2_2: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-
-      j2_3: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-
-      j2_4: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-      comment: Joi.string()
-        // .min(3)
-        .max(500),
-    },
-    jazz3: {
-      j3_1: Joi.number()
-        .integer()
-        .min(1)
-        .max(4),
-
-      j3_2: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-
-      j3_3: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-
-      j3_4: Joi.number()
-        .integer()
-        .min(1)
-        .max(5),
-      comment: Joi.string()
-        // .min(3)
-        .max(500),
-    },
+    ]
+    
+   
+    
   });
-  const result = schema.validate(req.body);
-  if (result.error) {
-    res.status(400).send(result.error.details[0].message);
+  const { value, error } = schema.validate(req.body);
+  if (error) {
+    res.status(400).send(error.details[0].message);
     return;
   }
-  const surveyRate = {
-    name: req.body.name,
-    country: req.body.country,
-    email: req.body.email,
-    rock1: req.body.rock1,
-    rock2: req.body.rock2,
-    rock3: req.body.rock3,
-    pop1: req.body.pop1,
-    pop2: req.body.pop2,
-    pop3: req.body.pop3,
-    jazz1: req.body.jazz1,
-    jazz2: req.body.jazz2,
-    jazz3: req.body.jazz3,
-  };
+  const survey = new Survey({ ...value });
+  const savedSurvey = await survey.save()
+
+  // const surveyRate = {
+  //   name: req.body.name,
+  //   country: req.body.country,
+  //   email: req.body.email,
+  //   rock1: req.body.rock1,
+  //   rock2: req.body.rock2,
+  //   rock3: req.body.rock3,
+  //   pop1: req.body.pop1,
+  //   pop2: req.body.pop2,
+  //   pop3: req.body.pop3,
+  //   jazz1: req.body.jazz1,
+  //   jazz2: req.body.jazz2,
+  //   jazz3: req.body.jazz3,
+  // };
   // surveyRate.push()
-  res.send(surveyRate);
+  res.send(savedSurvey);
 });
 
 app.listen({ port: 8000 }, () => {
